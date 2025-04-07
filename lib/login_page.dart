@@ -1,0 +1,76 @@
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'random_emojı.dart';
+import 'task_page.dart';
+
+class LoginPage extends StatefulWidget {
+  @override
+  _LoginPageState createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  final TextEditingController usernameController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  Future<void> _saveCredentials(String name, String password) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('username', name);
+    await prefs.setString('password', password);
+  }
+
+  void _login() async {
+    final name = usernameController.text;
+    final password = passwordController.text;
+    if (name.isNotEmpty && password.isNotEmpty) {
+      await _saveCredentials(name, password);
+      Navigator.pushReplacementNamed(context, '/randomEmo');
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Kullanıcı adı ve şifre giriniz')),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Login')),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            const SizedBox(height: 40),
+            const Text(
+              'Login',
+              style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 60),
+            TextField(
+              controller: usernameController,
+              decoration: const InputDecoration(
+                labelText: 'Kullanici Adı',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 16),
+            TextField(
+              controller: passwordController,
+              decoration: const InputDecoration(
+                labelText: 'şifre',
+                border: OutlineInputBorder(),
+              ),
+              obscureText: true,
+            ),
+            const SizedBox(height: 24),
+            ElevatedButton(
+              onPressed: _login,
+              child: const Text('Giriş Yap', style: TextStyle(fontSize: 18)),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
