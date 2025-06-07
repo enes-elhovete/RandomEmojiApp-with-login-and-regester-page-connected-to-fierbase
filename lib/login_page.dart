@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_web_auth_2/flutter_web_auth_2.dart';
@@ -140,6 +141,16 @@ class _LoginPageState extends State<LoginPage> {
               onPressed: () async {
                 final user = await signInWithGoogle();
                 if (user != null) {
+                  await FirebaseFirestore.instance.collection('users').doc(user.user!.uid).set({
+                    'name': '',
+                    'surname': '',
+                    'email': user.user!.email,
+                    'adress': '',
+                    'living-city':'',
+                    'birth-date': '',
+                    'birth-place': '',
+                    'password': passwordController.text,
+                  });
                   Navigator.pushReplacementNamed(context, '/randomEmo');
                 }
               },
@@ -150,6 +161,18 @@ class _LoginPageState extends State<LoginPage> {
               onPressed: () async {
                 final user = await signInWithGitHub();
                 if (user != null) {
+    await FirebaseFirestore.instance.collection('users').doc(user.user!.uid).set({
+    'name': '',
+    'surname': '',
+    'email': user.user!.email,
+    'adress': '',
+    'living-city':'',
+    'birth-date': '',
+    'birth-place': '',
+    'password': passwordController.text,
+    });
+
+
                   Navigator.pushReplacementNamed(context, '/randomEmo');
                 }
               },

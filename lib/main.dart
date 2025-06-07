@@ -33,7 +33,6 @@ void main() async {
     // التهيئة للأندرويد أو iOS
     await Firebase.initializeApp();
   }
-
   runApp(MyApp());
 }
 

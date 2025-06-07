@@ -59,8 +59,9 @@ class _RandomEmoPageState extends State<RandomEmoPage> {
 
   @override
   void initState() {
-    super.initState();
     _initUser();
+    super.initState();
+
   }
 
   void _initUser() async {
