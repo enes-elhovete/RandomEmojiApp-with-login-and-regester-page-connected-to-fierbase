@@ -22,6 +22,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController confirmPasswordController = TextEditingController();
 
   Future<void> addUserToFirestore() async {
+    print("================================================================");
     try {
       final docRef = FirebaseFirestore.instance.collection('users').doc();
       await docRef.set({
@@ -38,6 +39,7 @@ class _RegisterPageState extends State<RegisterPage> {
     } catch (e) {
       print("Error adding user to Firestore: $e");
     }
+    print("================================================================");
   }
 
   void _register() async {
@@ -58,7 +60,8 @@ class _RegisterPageState extends State<RegisterPage> {
           password: password,
         );
         await addUserToFirestore();
-        Navigator.pushReplacementNamed(context, '/');
+        FirebaseAuth.instance.signOut();
+       Navigator.pushReplacementNamed(context, '/');
       } on FirebaseAuthException catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error: ${e.message}')),
