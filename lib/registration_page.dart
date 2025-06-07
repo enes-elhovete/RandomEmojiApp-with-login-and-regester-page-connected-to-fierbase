@@ -58,7 +58,7 @@ class _RegisterPageState extends State<RegisterPage> {
           password: password,
         );
         await addUserToFirestore();
-        Navigator.pushReplacementNamed(context, '/randomEmo');
+        Navigator.pushReplacementNamed(context, '/');
       } on FirebaseAuthException catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error: ${e.message}')),
@@ -105,7 +105,6 @@ class _RegisterPageState extends State<RegisterPage> {
                   style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 30),
-
                 _buildField('İsim', nameController),
                 _buildField('Soyisim', surnameController),
                 _buildField('E-posta', emailController),
