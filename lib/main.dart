@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:todayproject/data_user.dart';
@@ -12,11 +13,30 @@ import 'random_emojı.dart';
 import 'hakkimizda_page.dart';
 import 'kaydedilen_veriler.dart';
 
-void main() async{
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+
+  // إذا لم يتم التهيئة بعد، نقوم بها
+  if (kIsWeb) {
+    // التهيئة للويب
+    await Firebase.initializeApp(
+      options: const FirebaseOptions(
+        apiKey: "AIzaSyCPFVBs51AoZI624tQgJZcxpthpI34Skk8",
+        authDomain: "hakan-e439d.firebaseapp.com",
+        projectId: "hakan-e439d",
+        storageBucket: "hakan-e439d.firebasestorage.app",
+        messagingSenderId: "684240182376",
+        appId: "1:684240182376:web:d5a3ed8db46b22a4a7afdd",
+      ),
+    );
+  } else {
+    // التهيئة للأندرويد أو iOS
+    await Firebase.initializeApp();
+  }
+
   runApp(MyApp());
 }
+
 
 
 
@@ -26,6 +46,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
 
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Login',
       initialRoute: FirebaseAuth.instance.currentUser != null ? '/randomEmo' : '/',
       routes: {

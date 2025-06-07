@@ -85,7 +85,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
           ), ListTile(
             title: const Text('profile'),
             onTap: () {
-              Navigator.pushReplacementNamed(context, "/profile");
+              Navigator.pushNamed(context, "/profile");
             },
           ),
           ListTile(

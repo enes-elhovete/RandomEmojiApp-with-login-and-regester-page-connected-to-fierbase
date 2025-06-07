@@ -145,7 +145,7 @@ class _LoginPageState extends State<LoginPage> {
               },
               child: Text("Login with Google"),
             ),
-
+            const SizedBox(height: 16),
             ElevatedButton(
               onPressed: () async {
                 final user = await signInWithGitHub();
