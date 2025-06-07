@@ -1,6 +1,11 @@
+import 'dart:convert';
+
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_web_auth_2/flutter_web_auth_2.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'random_emojı.dart';
 import 'task_page.dart';
@@ -45,6 +50,47 @@ class _LoginPageState extends State<LoginPage> {
       );
     }
   }
+  Future<UserCredential?> signInWithGoogle() async {
+    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+    if (googleUser == null) return null; // المستخدم لغى العملية
+
+    final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+
+    final credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
+    );
+
+    return await FirebaseAuth.instance.signInWithCredential(credential);
+  }
+
+  Future<UserCredential> signInWithGitHub() async {
+    const clientId = 'YOUR_GITHUB_CLIENT_ID';
+    const clientSecret = 'YOUR_GITHUB_CLIENT_SECRET';
+    const redirectUrl = 'https://<project-id>.firebaseapp.com/__/auth/handler';
+
+    final result = await FlutterWebAuth2.authenticate(
+      url: 'https://github.com/login/oauth/authorize?client_id=$clientId&redirect_uri=$redirectUrl&scope=read:user%20user:email',
+      callbackUrlScheme: 'https',
+    );
+
+    final code = Uri.parse(result).queryParameters['code'];
+
+    final response = await http.post(
+      Uri.parse("https://github.com/login/oauth/access_token"),
+      headers: {'Accept': 'application/json'},
+      body: {
+        'client_id': clientId,
+        'client_secret': clientSecret,
+        'code': code!,
+      },
+    );
+
+    final accessToken = json.decode(response.body)['access_token'];
+
+    final githubAuthCredential = GithubAuthProvider.credential(accessToken);
+    return await FirebaseAuth.instance.signInWithCredential(githubAuthCredential);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -83,6 +129,34 @@ class _LoginPageState extends State<LoginPage> {
               onPressed:_login,
               child: const Text('Giriş Yap', style: TextStyle(fontSize: 18)),
             ),
+
+            const SizedBox(height: 16),
+            Row(children: [
+              Expanded(child: Container(height: 2,color: Colors.black,)),
+          Text("veya",style: TextStyle(fontSize: 16),),
+              Expanded(child: Container(height: 2,color: Colors.black,)),
+            ],),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () async {
+                final user = await signInWithGoogle();
+                if (user != null) {
+                  Navigator.pushReplacementNamed(context, '/randomEmo');
+                }
+              },
+              child: Text("Login with Google"),
+            ),
+
+            ElevatedButton(
+              onPressed: () async {
+                final user = await signInWithGitHub();
+                if (user != null) {
+                  Navigator.pushReplacementNamed(context, '/randomEmo');
+                }
+              },
+              child: Text("Login with GitHub"),
+            ),
+
             const SizedBox(height: 16),
            Row(children: [
              Text("Hesabınız yok mu?",style: TextStyle(fontSize: 16),) ,

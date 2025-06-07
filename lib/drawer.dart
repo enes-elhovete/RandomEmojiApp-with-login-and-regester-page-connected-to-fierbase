@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'random_emojı.dart';
 import 'task_page.dart';
@@ -83,7 +84,10 @@ class _CustomDrawerState extends State<CustomDrawer> {
           ),
           ListTile(
             title: const Text('Çıkış Yap'),
-            onTap: () {
+            onTap: () async {
+              final GoogleSignIn googleSignIn = GoogleSignIn();
+              // تسجيل الخروج من Google
+              await googleSignIn.signOut();
               FirebaseAuth.instance.signOut();
               Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
             },
