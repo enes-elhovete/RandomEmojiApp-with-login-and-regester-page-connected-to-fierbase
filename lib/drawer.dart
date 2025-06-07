@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'random_emojı.dart';
@@ -83,8 +84,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
           ListTile(
             title: const Text('Çıkış Yap'),
             onTap: () {
-              Navigator.pop(context);
-              Navigator.pushNamed(context, '/');
+              FirebaseAuth.instance.signOut();
+              Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
             },
           ),
         ],

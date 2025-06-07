@@ -1,5 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:todayproject/registration_page.dart';
 import 'login_page.dart';
 import 'task_page.dart';
 import 'task_list_page.dart';
@@ -7,22 +10,29 @@ import 'random_emojı.dart';
 import 'hakkimizda_page.dart';
 import 'kaydedilen_veriler.dart';
 
-void main() {
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(MyApp());
 }
 
+
+
 class MyApp extends StatelessWidget {
+
   @override
   Widget build(BuildContext context) {
+
     return MaterialApp(
       title: 'Login',
-      initialRoute: '/',
+      initialRoute: FirebaseAuth.instance.currentUser != null ? '/randomEmo' : '/',
       routes: {
         '/': (context) => LoginPage(),
         '/task': (context) => TaskPage(),
         '/tasklist': (context) => TaskListPage(),
         '/randomEmo': (context) => RandomEmoPage(),
         '/hakkimizda': (context) => HakkimizdaPage(),
+        '/register': (context) => RegisterPage(),
         '/kaydedilenVeriler':
             (context) => KaydedilenVerilerPage(), // إضافة الصفحة الجديدة
       },
@@ -31,6 +41,7 @@ class MyApp extends StatelessWidget {
 }
 
 class DrawerWidget extends StatefulWidget {
+
   @override
   _DrawerWidgetState createState() => _DrawerWidgetState();
 }
