@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:todayproject/data_user.dart'; // مكان وجود UserModel
 import 'dart:math';
-import 'drawer.dart';
+import 'drawer.dart'; // قائمة Drawer
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
@@ -38,142 +39,45 @@ class RandomEmoPage extends StatefulWidget {
 
 class _RandomEmoPageState extends State<RandomEmoPage> {
   final List<String> emojis = [
-    '😊',
-    '😂',
-    '😍',
-    '🥺',
-    '😎',
-    '😜',
-    '😢',
-    '🤔',
-    '😉',
-    '😆',
-    '😅',
-    '😇',
-    '😛',
-    '😋',
-    '😝',
-    '😜',
-    '🤗',
-    '😐',
-    '😶',
-    '😏',
-    '🙄',
-    '😬',
-    '😑',
-    '🤐',
-    '😷',
-    '😓',
-    '😥',
-    '😨',
-    '😰',
-    '😱',
-    '🤢',
-    '🤮',
-    '🤧',
-    '😴',
-    '🥱',
-    '😪',
-    '😵',
-    '🤯',
-    '😲',
-    '😳',
-    '🥴',
-    '😈',
-    '👿',
-    '👻',
-    '💀',
-    '☠️',
-    '👽',
-    '👾',
-    '🎃',
-    '😺',
-    '😸',
-    '😻',
-    '😼',
-    '🙀',
-    '😿',
-    '😾',
-    '🐶',
-    '🐱',
-    '🐭',
-    '🐹',
-    '🐰',
-    '🐸',
-    '🦊',
-    '🐻',
-    '🐼',
-    '🐯',
-    '🦁',
-    '🐮',
-    '🐷',
-    '🐵',
-    '🐧',
-    '🐦',
-    '🦉',
-    '🦆',
-    '🦅',
-    '🦇',
-    '🐢',
-    '🐍',
-    '🦎',
-    '🐊',
-    '🐳',
-    '🐋',
-    '🐬',
-    '🐟',
-    '🐠',
-    '🐡',
-    '🦑',
-    '🦐',
-    '🦞',
-    '🦀',
-    '🐙',
-    '🦋',
-    '🐌',
-    '🐛',
-    '🦗',
-    '🦠',
-    '🐜',
-    '🐝',
-    '🐞',
-    '🦋',
-    '🐞',
-    '🌸',
-    '🌼',
-    '🌺',
-    '🌻',
-    '🌷',
-    '🌹',
-    '🥀',
-    '🌺',
-    '💐',
-    '🌾',
-    '🍀',
-    '🍃',
-    '🍂',
-    '🍁',
-    '🌰',
-    '🌳',
-    '🌴',
-    '🌵',
-    '🌲',
-    '🌱',
+    '😊', '😂', '😍', '🥺', '😎', '😜', '😢', '🤔', '😉',
+    '😆', '😅', '😇', '😛', '😋', '😝', '🤗', '😐', '😶',
+    '😏', '🙄', '😬', '😑', '🤐', '😷', '😓', '😥', '😨',
+    '😰', '😱', '🤢', '🤮', '🤧', '😴', '🥱', '😪', '😵',
+    '🤯', '😲', '😳', '🥴', '😈', '👿', '👻', '💀', '☠️',
+    '👽', '👾', '🎃', '😺', '😸', '😻', '😼', '🙀', '😿',
+    '😾', '🐶', '🐱', '🐭', '🐹', '🐰', '🐸', '🦊', '🐻',
+    '🐼', '🐯', '🦁', '🐮', '🐷', '🐵', '🐧', '🐦', '🦉',
+    '🦆', '🦅', '🦇', '🐢', '🐍', '🦎', '🐊', '🐳', '🐋',
+    '🐬', '🐟', '🐠', '🐡', '🦑', '🦐', '🦞', '🦀', '🐙',
+    '🦋', '🐌', '🐛', '🦗', '🦠', '🐜', '🐝', '🐞', '🌸',
+    '🌼', '🌺', '🌻', '🌷', '🌹', '🥀', '💐', '🌾', '🍀',
+    '🍃', '🍂', '🍁', '🌰', '🌳', '🌴', '🌵', '🌲', '🌱',
   ];
   String currentEmoji = '😊';
-  String? _username;
-
-  Future<void> _loadUsername() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _username = prefs.getString('username') ?? 'Misafir';
-    });
-  }
+  bool _loading = true;
+  String _displayName = 'Misafir';
 
   @override
   void initState() {
     super.initState();
-    _loadUsername();
+    _initUser();
+  }
+
+  void _initUser() async {
+    await UserModel.load();
+    try {
+      final user = UserModel();
+      setState(() {
+        _displayName = user.name;
+        _loading = false;
+      });
+    } catch (e) {
+      print('فشل عرض الاسم: $e');
+      setState(() {
+        _loading = false;
+        _displayName = 'Misafir';
+      });
+    }
   }
 
   void getRandomEmoji() {
@@ -189,25 +93,23 @@ class _RandomEmoPageState extends State<RandomEmoPage> {
       appBar: AppBar(
         title: const Text('Rastgele Emoji'),
         leading: Builder(
-          builder: (BuildContext context) {
-            return IconButton(
-              icon: const Icon(Icons.menu),
-              onPressed: () {
-                Scaffold.of(context).openDrawer();
-              },
-            );
-          },
+          builder: (context) => IconButton(
+            icon: const Icon(Icons.menu),
+            onPressed: () => Scaffold.of(context).openDrawer(),
+          ),
         ),
       ),
       drawer: CustomDrawer(),
-      body: Column(
+      body: _loading
+          ? const Center(child: CircularProgressIndicator())
+          : Column(
         children: [
           Container(
             width: double.infinity,
             color: Colors.blueAccent,
             padding: const EdgeInsets.all(16.0),
             child: Text(
-              'Merhaba, ${_username ?? 'Misafir'}',
+              'Merhaba, $_displayName',
               style: const TextStyle(
                 color: Colors.white,
                 fontSize: 28,

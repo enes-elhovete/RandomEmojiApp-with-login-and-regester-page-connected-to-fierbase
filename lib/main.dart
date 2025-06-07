@@ -2,6 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:todayproject/data_user.dart';
+import 'package:todayproject/profile_page.dart';
 import 'package:todayproject/registration_page.dart';
 import 'login_page.dart';
 import 'task_page.dart';
@@ -33,6 +35,7 @@ class MyApp extends StatelessWidget {
         '/randomEmo': (context) => RandomEmoPage(),
         '/hakkimizda': (context) => HakkimizdaPage(),
         '/register': (context) => RegisterPage(),
+        "/profile": (context) => ProfilePage(),
         '/kaydedilenVeriler':
             (context) => KaydedilenVerilerPage(), // إضافة الصفحة الجديدة
       },
@@ -77,7 +80,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                 ),
                 const SizedBox(height: 10),
                 Text(
-                  'Merhaba, ${_username ?? 'Guest'}',
+                  'Merhaba, ${UserModel().name ?? 'Guest'}',
                   style: const TextStyle(fontSize: 18),
                 ),
               ],

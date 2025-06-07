@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'data_user.dart';
 import 'random_emojı.dart';
 import 'task_page.dart';
 import 'task_list_page.dart';
@@ -37,7 +38,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
             decoration: BoxDecoration(color: Color(0xFF7C4DFF)),
             child: Center(
               child: Text(
-                'Merhaba, ${_username ?? 'Misafir'}',
+                'Merhaba, ${UserModel().name ?? 'Misafir'}',
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 28,
@@ -80,6 +81,11 @@ class _CustomDrawerState extends State<CustomDrawer> {
             onTap: () {
               Navigator.pop(context);
               Navigator.pushNamed(context, '/hakkimizda');
+            },
+          ), ListTile(
+            title: const Text('profile'),
+            onTap: () {
+              Navigator.pushReplacementNamed(context, "/profile");
             },
           ),
           ListTile(

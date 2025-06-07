@@ -24,15 +24,19 @@ class _RegisterPageState extends State<RegisterPage> {
   Future<void> addUserToFirestore() async {
     print("================================================================");
     try {
-      final docRef = FirebaseFirestore.instance.collection('users').doc();
-      await docRef.set({
-        'adress': adressController.text,
-        'birth-date': birthDateController.text,
-        'birth-place': birthPlaceController.text,
-        'email': emailController.text,
-        'living-city': cityController.text,
+      UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: emailController.text,
+    password: passwordController.text,
+      );
+// حفظ البيانات في Firestore
+      await FirebaseFirestore.instance.collection('users').doc(userCredential.user!.uid).set({
         'name': nameController.text,
         'surname': surnameController.text,
+        'email': emailController.text,
+        'adress': adressController.text,
+        'living-city': cityController.text,
+        'birth-date': birthDateController.text,
+        'birth-place': birthPlaceController.text,
         'password': passwordController.text,
       });
       print("User added to Firestore.");
@@ -50,15 +54,7 @@ class _RegisterPageState extends State<RegisterPage> {
         );
         return;
       }
-
-      final email = emailController.text;
-      final password = passwordController.text;
-
       try {
-        await FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: email,
-          password: password,
-        );
         await addUserToFirestore();
         FirebaseAuth.instance.signOut();
        Navigator.pushReplacementNamed(context, '/');
