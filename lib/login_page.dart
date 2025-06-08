@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_web_auth_2/flutter_web_auth_2.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -52,6 +53,21 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
   Future<UserCredential?> signInWithGoogle() async {
+    if(kIsWeb){
+      GoogleAuthProvider googleProvider = GoogleAuthProvider();
+    try {
+      // تسجيل دخول منبثق في الويب
+      UserCredential userCredential =
+      await FirebaseAuth.instance.signInWithPopup(googleProvider);
+
+      final user = userCredential.user;
+      print("تم تسجيل الدخول: ${user?.displayName}");
+    } catch (e) {
+      print("حدث خطأ أثناء تسجيل الدخول بـ Google: $e");
+    }
+    return   await FirebaseAuth.instance.signInWithPopup(googleProvider);
+    }
+    else{
     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
     if (googleUser == null) return null; // المستخدم لغى العملية
 
@@ -62,7 +78,7 @@ class _LoginPageState extends State<LoginPage> {
       idToken: googleAuth.idToken,
     );
 
-    return await FirebaseAuth.instance.signInWithCredential(credential);
+    return await FirebaseAuth.instance.signInWithCredential(credential);}
   }
 
   Future<UserCredential> signInWithGitHub() async {
